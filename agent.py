@@ -3,9 +3,9 @@ import openai
 import requests
 import time
 import json
-# import ui
-# from sound import Recorder, Player
-# import speech
+import ui
+from sound import Recorder, Player
+import speech
 
 openai.api_key = ""
 
@@ -64,7 +64,6 @@ def function_mapping(text):
         functions=functions,
         function_call="auto",
     )
-    print(res)
     response_message = res["choices"][0]["message"]
     if response_message.get("function_call"):
         func_map = {
@@ -74,8 +73,7 @@ def function_mapping(text):
         func = func_map.get(response_message["function_call"]["name"], None)
 
         if func is None:
-            print('存在しない関数です')
-            return "すみません。お役に立てません"
+            return "存在しない関数です"
         
         args = json.loads(response_message["function_call"]["arguments"])
         result = str(func(**args))
@@ -84,42 +82,34 @@ def function_mapping(text):
         return "すみません。お役に立てません"
 
 
-# def speech_result(filename):
-#     input_text = transcribe(filename)
-#     answer_text = function_mapping(input_text)
-#     speech.say(answer_text)
-# 
-# global recorder
-# recorder = None
-# 
-# def on_push_recorder(sender):
-#     button = sender.superview["button1"]
-#     filename = 'audio.wav'
-# 
-#     global recorder
-#     if not recorder:
-#         # 開始処理
-#         recorder = Recorder(filename)
-#         recorder.record()
-# 
-# 
-#         button.title = "止める"
-#     else:
-#         # 終了処理
-#         recorder.stop()
-#         recorder = None
-# 
-#         speech_result(filename)
-# 
-#         button.title = "開始"
-# 
-# 
-# v = ui.load_view()
-# v.present()
+def speech_result(filename):
+    input_text = transcribe(filename)
+    answer_text = function_mapping(input_text)
+    speech.say(answer_text)
 
-def test():
-    print(function_mapping("今日の大阪の天気は"))
-    print(function_mapping("5 足す 10 は"))
-    print(function_mapping("元気ですか"))
+global recorder
+recorder = None
 
-test()
+def on_push_recorder(sender):
+    button = sender.superview["button1"]
+    filename = 'audio.wav'
+
+    global recorder
+    if not recorder:
+        # 開始処理
+        recorder = Recorder(filename)
+        recorder.record()
+
+        button.title = "止める"
+    else:
+        # 終了処理
+        recorder.stop()
+        recorder = None
+
+        speech_result(filename)
+
+        button.title = "開始"
+
+
+v = ui.load_view()
+v.present()
