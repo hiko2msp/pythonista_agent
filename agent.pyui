@@ -10,7 +10,7 @@
         "attributes" : {
           "action" : "on_push_recorder",
           "frame" : "{{120, 224}, {80, 32}}",
-          "title" : "開始",
+          "title" : "Start",
           "uuid" : "B7098598-B354-4B6D-AE24-A4D376B4724E",
           "class" : "Button",
           "name" : "button1",

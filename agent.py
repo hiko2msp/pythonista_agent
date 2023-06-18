@@ -31,7 +31,7 @@ functions = [
         "parameters": {
             "type": "object",
             "properties": {
-                "region": {"type": "string", "description": "都市名。大阪、東京、福岡など"}
+                "region": {"type": "string", "description": "The name of city. like Tokyo, Osaka ..."}
             },
         },
         "required": ["region"],
@@ -73,13 +73,13 @@ def function_mapping(text):
         func = func_map.get(response_message["function_call"]["name"], None)
 
         if func is None:
-            return "存在しない関数です"
+            return "This function is not callable."
         
         args = json.loads(response_message["function_call"]["arguments"])
         result = str(func(**args))
         return result
     else:
-        return "すみません。お役に立てません"
+        return "Sorry. I can't help you."
 
 
 def speech_result(filename):
@@ -96,19 +96,17 @@ def on_push_recorder(sender):
 
     global recorder
     if not recorder:
-        # 開始処理
         recorder = Recorder(filename)
         recorder.record()
 
-        button.title = "止める"
+        button.title = "Stop"
     else:
-        # 終了処理
         recorder.stop()
         recorder = None
 
         speech_result(filename)
 
-        button.title = "開始"
+        button.title = "Start"
 
 
 v = ui.load_view()
